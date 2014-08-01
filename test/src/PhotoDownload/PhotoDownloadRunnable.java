@@ -1,10 +1,15 @@
 package PhotoDownload;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.BlockingQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -38,8 +43,26 @@ public class PhotoDownloadRunnable implements Runnable{
 		while(!(urlstr=getURL()).equals("exit")){  //如果是exit字符串则退出线程
 			try {
 				String filename = getFileName(urlstr);
+				String fileAbsolutePath = path +filename;
+				File file = new File(fileAbsolutePath);
+				if(!file.exists())
+					file.createNewFile();
+				
 				URL url = new URL(urlstr);
 				InputStream in  = url.openStream();
+				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+				int read = 0 ;
+				int count = 0;
+				while((read = in.read())!=-1){
+					out.write(read);
+					count++;
+				}
+				in.close();
+				out.close();
+				//这可能有点影响性能，因为是下载并保存之后在判断文件大小是否符合的
+				if(count < minSize || count > maxSize){   //文件大小不符，删除
+					file.delete();
+				}
 				
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -77,7 +100,14 @@ public class PhotoDownloadRunnable implements Runnable{
 	 */
 	private String getFileName(String url){
 		String name =null;
-		
+		String regex = "/[^/]*.(jpg)|(JPG)|(gif)|(GIF)|(png)|(PNG)|(BMP)|(bmp)";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(url);
+		if(matcher.find()){
+			int begin = matcher.start()+1;
+			int end = matcher.end();
+			name = url.substring(begin, end);
+		}
 		return name;
 	}
 
