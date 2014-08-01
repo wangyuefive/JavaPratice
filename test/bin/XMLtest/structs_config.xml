@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+	<form-beans>
+      <form-bean name="voiceMailConfigForm" type="com.gohigh.centrex.form.VoiceMailConfigForm" />
+      <form-bean name="voiceMailEditForm" type="com.gohigh.centrex.form.VoiceMailEditForm" />
+      <form-bean name="voiceMainEditForm" type="com.gohigh.centrex.form.VoiceMainEditForm" />
+      <form-bean name="voicemailUserConfigForm" type="com.gohigh.centrex.form.VoicemailUserConfigForm" />
+
+	</form-beans>
+
+	<global-forwards>
+	</global-forwards>
+
+	<action-mappings>
+	  <action
+      attribute="voiceMailConfigForm"
+      name="voiceMailConfigForm"
+      parameter="do"
+      path="/voiceMailConfig"
+      scope="request"
+      type="com.gohigh.centrex.action.VoiceMailConfigAction">
+      <forward name="showVoiceMailConfig" path="/voice/config-voice-mail.jsp" />
+      <forward name="/voiceMainEdit" path="/voiceMainEdit.do" />
+      <forward name="showUserConfig" path="/voicemailUserConfig.do" />
+      <forward name="showError" path="/voice/voiceConfigError.jsp" />
+    </action>
+
+    <action
+      attribute="voiceMailEditForm"
+      input="/voice/voiceMailAdd.jsp"
+      name="voiceMailEditForm"
+      parameter="do"
+      path="/voiceMailEdit"
+      scope="request"
+      type="com.gohigh.centrex.action.VoiceMailEditAction">
+      <forward name="showVoiceMailEdit" path="/voice/voiceMailEdit.jsp" />
+      <forward name="showVoiceMailConfig" path="/voiceMailConfig.do" />
+      <forward name="voicemailUserConfig" path="/voicemailUserConfig.do?do=list" />
+      <forward name="showVoiceMailAdd" path="/voice/voiceMailAdd.jsp" />
+      <forward name="showVoiceMailQuery" path="/voice/voicemailQuery.jsp" />
+      <forward name="showBatchDeal" path="/voice/voicemailBatch.jsp" />
+    </action>
+    <action
+      attribute="voiceMainEditForm"
+      name="voiceMainEditForm"
+      parameter="do"
+      path="/voiceMainEdit"
+      scope="request"
+      type="com.gohigh.centrex.action.VoiceMainEditAction">
+      <forward name="showVoiceMainAdd" path="/voice/voiceMainAdd.jsp" />
+      <forward name="showVoiceMailConfig" path="/voiceMailConfig.do" />
+      <forward name="showVoiceMainEdit" path="/voice/voiceMainEdit.jsp" />
+      <forward name="configMailKeepTime" path="/voice/globalMailboxConfig.jsp" />
+    </action>
+    <action
+      attribute="voicemailUserConfigForm"
+      input="/voice/userConfig.jsp"
+      name="voicemailUserConfigForm"
+      parameter="do"
+      path="/voicemailUserConfig"
+      scope="request"
+      type="com.gohigh.centrex.action.VoicemailUserConfigAction">
+      <forward name="list" path="/voicemailUserConfig.do?do=list" />
+      <forward name="showUserConfig" path="/voice/userConfig.jsp" />
+      <forward name="voiceMailAdd" path="/voice/voiceMailAdd.jsp" />
+    </action>
+    
+	</action-mappings>
+
+</struts-config>
