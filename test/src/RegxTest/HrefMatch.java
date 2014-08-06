@@ -19,7 +19,7 @@ public class HrefMatch {
 	private static Logger log = Logger.getLogger(HrefMatch.class);
 	
 	public static void main(String[] args) throws IOException{
-		String urlstr = "http://www.ifeng.com"; 
+		String urlstr = "http://tjholowaychuk.com/scenery"; 
 		URL url = new URL(urlstr);
 		
 		InputStreamReader in = new InputStreamReader(url.openStream(),"UTF-8");
@@ -30,7 +30,7 @@ public class HrefMatch {
 			input.append((char)ch);
 		}
 		
-		String patternstr = "\\bhref\\s*=\\s*(\"[^\"]*|[^\\s]*)\"" ;  //正则表达式 网页URL
+		String patternstr = "\"http[^\"]*\\.jpg\"" ;  //正则表达式 网页URL
 		Pattern pattern = Pattern.compile(patternstr);
 		Matcher matcher = pattern.matcher(input);
 		while(matcher.find()){

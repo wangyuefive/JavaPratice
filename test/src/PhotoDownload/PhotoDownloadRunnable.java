@@ -11,6 +11,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 
 public class PhotoDownloadRunnable implements Runnable{
@@ -23,27 +25,25 @@ public class PhotoDownloadRunnable implements Runnable{
 	
 	private long minSize = 0 ;
 	
-	private long maxSize = 0 ;
-	
 	/**
-	 * @param list 图片链接的队列
-	 * @param doc  需要保存图片的文件夹的地址
-	 * @param min max : 图片的大小的范围  单位 byte;
+	 * @param list  图片链接的队列
+	 * @param doc   需要保存图片的文件夹的地址
+	 * @param min : 图片的最小尺寸  单位 byte;
 	 */
-	public PhotoDownloadRunnable(BlockingQueue<String> list, String docPath , long min, long max){
+	public PhotoDownloadRunnable(BlockingQueue<String> list, String docPath , long min){
 		this.urllist = list;
 		this.path = docPath;
-		this.maxSize =max;
 		this.minSize = min;
 	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		String urlstr = null;
-		while(!(urlstr=getURL()).equals("exit")){  //如果是exit字符串则退出线程
-			try {
+		log.info("Thread "+Thread.currentThread().getId()+ " Downlaod is running");
+		try {
+			while(!(urlstr=getURL()).equals("exit")){  //如果是exit字符串则退出线程
 				String filename = getFileName(urlstr);
-				String fileAbsolutePath = path +filename;
+				String fileAbsolutePath = path + "/"+filename;
 				File file = new File(fileAbsolutePath);
 				if(!file.exists())
 					file.createNewFile();
@@ -60,20 +60,19 @@ public class PhotoDownloadRunnable implements Runnable{
 				in.close();
 				out.close();
 				//这可能有点影响性能，因为是下载并保存之后在判断文件大小是否符合的
-				if(count < minSize || count > maxSize){   //文件大小不符，删除
+				if(count < minSize ){   //文件大小不符，删除
 					file.delete();
-				}
-				
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-		}
-		
-		
+				}	
+			} 
+			log.info("Thread "+Thread.currentThread().getId()+" is exit!");
+			
+		}catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
 	}
 	
 	private String getURL(){
@@ -87,6 +86,9 @@ public class PhotoDownloadRunnable implements Runnable{
 			try {
 				url = urllist.take();
 				done =true;
+				if(urllist.size() == 0 && url.equals("exit")){
+					JOptionPane.showMessageDialog(null,"下载完毕");
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -95,6 +97,7 @@ public class PhotoDownloadRunnable implements Runnable{
 		return url ;
 	}
 	
+	private int i = 0;
 	/**
 	 *从当前的URL中获取文件的名称
 	 */
@@ -103,10 +106,11 @@ public class PhotoDownloadRunnable implements Runnable{
 		String regex = "/[^/]*.(jpg)|(JPG)|(gif)|(GIF)|(png)|(PNG)|(BMP)|(bmp)";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(url);
+		String pre = ""+(i++)+"_";
 		if(matcher.find()){
 			int begin = matcher.start()+1;
 			int end = matcher.end();
-			name = url.substring(begin, end);
+			name = pre + url.substring(begin, end);
 		}
 		return name;
 	}

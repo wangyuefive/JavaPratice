@@ -16,6 +16,11 @@ public class PhotoURLParaser implements Runnable{
 	
 	private String regex = null ; //从webHTML挑出图片的连接的正则表达式
 	
+	/**
+	 * @param list  阻塞队列
+	 * @param html  网页html的源文件
+	 * @param regex 需要判断的图片的正则表达式
+	 */
 	public PhotoURLParaser(BlockingQueue<String> list , String html , String regex){
 		this.urllist = list;
 		this.webHTML = html;
@@ -28,17 +33,20 @@ public class PhotoURLParaser implements Runnable{
 			log.info("webHTML or regex or urllist is null");
 			return;
 		}
-		Pattern pattern = Pattern.compile(this.regex);
+		
+		Pattern pattern = Pattern.compile(this.regex); 
 		Matcher matcher = pattern.matcher(webHTML);
+		log.info("==-----regex =" + regex);
 		while(matcher.find()){
 			int begin = matcher.start();
 			int end = matcher.end();
 			String url = webHTML.substring(begin, end);
-			log.info(url);
+			url = url.substring(1, url.length()-1);
 			boolean done = false;
 			while(!done){
 				try {
 					urllist.put(url);  //加入队列
+					log.info("------>"+url);
 					done =true;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -46,7 +54,7 @@ public class PhotoURLParaser implements Runnable{
 			}
 		}
 		
-		for(int i = 0 ; i < 2*PhotoDownload.DownLoadThreadCount ; i++){
+		for(int i = 0 ; i < PhotoDownload.DownLoadThreadCount ; i++){
 			boolean done = false;
 			while(!done){
 				try {
