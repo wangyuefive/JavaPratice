@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ToolTipManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -49,12 +50,13 @@ public class ColorFrame extends JFrame {
 		blueField = new JTextField("255",3);
 		panel.add(blueField);
 		blueField.getDocument().addDocumentListener(listener);
+		blueField.setToolTipText(this.getName());
 		
 		this.add(panel);
 		pack();
 		
 	}
-		
+	 
 	public void setColor()
 	{
 		try {
