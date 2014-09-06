@@ -117,7 +117,7 @@ public class BorderDemo extends JFrame {
 		// ÏÔÊ¾¿ò¼Ü´°¿Ú
 		frame.pack();
 		frame.setVisible(true);
-		
+		Box hbox = Box.createHorizontalBox();
 	}
 }
 
