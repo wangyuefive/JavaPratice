@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+
+Name:JavaBean/imageViewer.class
+Java-Bean: True
