@@ -19,7 +19,7 @@ public class PhotoURLParaser implements Runnable{
 	/**
 	 * @param list  阻塞队列
 	 * @param html  网页html的源文件
-	 * @param regex 需要判断的位于HTML中图片连接的正则表达式
+	 * @param regex 需要判断的图片的正则表达式
 	 */
 	public PhotoURLParaser(BlockingQueue<String> list , String html , String regex){
 		this.urllist = list;
